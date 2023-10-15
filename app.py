@@ -1,16 +1,19 @@
+import os
+
 import openai
 import streamlit as st
 from streamlit_chat import message
 
 # Setting page title and header
-st.set_page_config(page_title="AVA", page_icon=":robot_face:")
-st.markdown("<h1 style='text-align: center;'>AVA - a totally harmless chatbot 😬</h1>", unsafe_allow_html=True)
+st.set_page_config(page_title="Randstad", page_icon=":robot_face:")
+st.markdown("<h1 style='text-align: center;'>AMA Randstad Digital</h1>", unsafe_allow_html=True)
 
 # Set org ID and API key
-openai.organization = "<YOUR_OPENAI_ORG_ID>"
-openai.api_key = "<YOUR_OPENAI_API_KEY>"
+# openai.organization = "<YOUR_OPENAI_ORG_ID>"
+openai.api_key = os.environ["OPENAI_API_KEY"]
 
-# Initialise session state variables
+# Initializes session state variables, which will persist across interactions
+# (used to maintain state throughout the user’s session).
 if 'generated' not in st.session_state:
     st.session_state['generated'] = []
 if 'past' not in st.session_state:
@@ -29,10 +32,12 @@ if 'total_cost' not in st.session_state:
     st.session_state['total_cost'] = 0.0
 
 # Sidebar - let user choose model, show total cost of current conversation, and let user clear the current conversation
+# Sets up a sidebar which includes a title, a radio button for model selection,
+# a placeholder for cost display, and a button to clear the conversation.
 st.sidebar.title("Sidebar")
 model_name = st.sidebar.radio("Choose a model:", ("GPT-3.5", "GPT-4"))
 counter_placeholder = st.sidebar.empty()
-counter_placeholder.write(f"Total cost of this conversation: ${st.session_state['total_cost']:.5f}")
+counter_placeholder.write(f"Total cost of this conversation: $0")
 clear_button = st.sidebar.button("Clear Conversation", key="clear")
 
 # Map model names to OpenAI model IDs
